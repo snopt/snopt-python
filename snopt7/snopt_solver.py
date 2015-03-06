@@ -249,10 +249,6 @@ class SNOPT_solver(object):
                 nFname = 1
                 Fnames = None
 
-        print nxname, n
-        print nFname, nF
-        print xnames
-        print Fnames
         if (nxname != n and nxname != 1) or (nFname != nF and nFname != 1 ):
             nxname = 1
             xnames = None
