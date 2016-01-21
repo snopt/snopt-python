@@ -1,7 +1,7 @@
 snopt-python
 ================
 
-This package provides Python support for the nonlinear optimization code SNOPT.
+This package provides Python support for the nonlinear optimization code SNOPT.  This package does not include the SNOPT libraries, only the python interface.
 
 To use:
 Export the location of the SNOPT to variable $SNOPT7, e.g.,
