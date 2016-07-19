@@ -190,6 +190,7 @@ class SNOPT_solver(object):
             A      = usrA.data
             neA    = usrA.nnz
         else:
+            A      = None
             if verbose:
                 print ' --> Linear component of Jacobian not provided'
 
