@@ -19,19 +19,19 @@ The Jacobian is:
 
 """
 
-import numpy           as np
-import scipy.sparse    as sp
-from   optimize.snopt7 import SNOPT_solver
+import numpy            as np
+import scipy.sparse     as sp
+from   optimize.solvers import snopta, SNOPT_options
 
 
-def sntoya_objF(status,x,needF,needG,cu,iu,ru):
+def sntoya_objF(status,x,F,G,needF,needG):
     F = np.array([                      x[1], # objective row
                    x[0]**2        + 4.0*x[1]**2,
                   (x[0] - 2.0)**2 +     x[1]**2 ])
     return status, F
 
 
-def sntoya_objFG(status,x,needF,needG,cu,iu,ru):
+def sntoya_objFG(status,x,F,G,needF,needG):
     F = np.array([                      x[1], # objective row
                    x[0]**2        + 4.0*x[1]**2,
                   (x[0] - 2.0)**2 +     x[1]**2 ])
@@ -40,35 +40,47 @@ def sntoya_objFG(status,x,needF,needG,cu,iu,ru):
     return status, F, G
 
 
-
 inf   = 1.0e20
+options = SNOPT_options()
 
-snopt = SNOPT_solver()
+options.setOption('Verbose',True)
+options.setOption('Solution print',True)
+options.setOption('Print filename','sntoya.out')
 
-snopt.setOption('Verbose',True)
-snopt.setOption('Solution print',True)
-snopt.setOption('Print file','sntoya.out')
+options.setOption('Summary frequency',1)
 
 
-# Either dtype works, but the names for x and F have to be of
-# the correct length, else they are both ignored by SNOPT:
-xNames  = np.array([ '      x0', '      x1' ])
-FNames  = np.array([ '      F0', '      F1', '      F2' ],dtype='c')
+# Name arrays have to be dtype='|S1' and also have to be the
+# correct length, else they are ignored by SNOPT:
+xnames  = np.empty(2,dtype='|S8')
+xnames[0] = "      x0"
+xnames[1] = "      x1"
+
+Fnames  = np.empty(3,dtype='|S8')
+Fnames[0] = "      F0"
+Fnames[1] = "      F1"
+Fnames[2] = "      F2"
 
 x0      = np.array([ 1.0, 1.0 ])
-
 xlow    = np.array([ 0.0, -inf])
 xupp    = np.array([ inf,  inf])
 
 Flow    = np.array([ -inf, -inf, -inf ])
 Fupp    = np.array([  inf,  4.0,  5.0 ])
 
+n       = 2
+nF      = 3
+
 ObjRow  = 1
 
+
 # We first solve the problem without providing derivative info
-snopt.snopta(name=' sntoyaF',x0=x0,xlow=xlow,xupp=xupp,
-             Flow=Flow,Fupp=Fupp,ObjRow=ObjRow,
-             usrfun=sntoya_objF,xnames=xNames,Fnames=FNames)
+result = snopta(sntoya_objF,n,nF,x0=x0,
+                xlow=xlow,xupp=xupp,
+                Flow=Flow,Fupp=Fupp,
+                ObjRow=ObjRow,
+                xnames=xnames,Fnames=Fnames,
+                name=' sntoyaF',options=options)
 
 # Now we set up the derivative structures...
 
@@ -92,13 +104,17 @@ G = np.array([ [0, 0],
 # coordinate matrix
 #  A = sp.coo_matrix(A)
 #  G = sp.coo_matrix(G)
-# or explicitly in coordinate form
+# or explicitly in coordinate form as a tuple
 #  iAfun = row indices of A
 #  jAvar = col indices of A
 #  A     = matrix values of A
+#  (A,iAfun,jAvar)
 #
 #  iGfun = row indices of G
 #  jGvar = col indices of G
+#  (iGfun,jGvar)
+#
 
-snopt.snopta(name='sntoyaFG',usrfun=sntoya_objFG,x0=x0,xlow=xlow,xupp=xupp,
-             Flow=Flow,Fupp=Fupp,ObjRow=ObjRow,A=A,G=G,xnames=xNames,Fnames=FNames)
+result = snopta(sntoya_objFG,n,nF,x0=x0,name='sntoyaFG',xlow=xlow,xupp=xupp,
+                Flow=Flow,Fupp=Fupp,ObjRow=ObjRow,A=A,G=G,xnames=xnames,Fnames=Fnames)
+print(result)

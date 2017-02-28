@@ -3,10 +3,10 @@ An example SNOPTB problem.
 """
 
 import numpy           as np
-from   optimize.snopt7 import SNOPT_solver
+from  optimize.solvers import snoptb, SNOPT_options
 
 
-def hexCon(mode,nnCon,nnJac,neJac,x,nState,cu,iu,ru):
+def hexCon(mode,x,fCon,gCon,nState):
     two = 2.0
 
     fCon     = np.zeros(nnCon,float)
@@ -27,7 +27,6 @@ def hexCon(mode,nnCon,nnJac,neJac,x,nState,cu,iu,ru):
 
     # Nonlinear Jacobian elements for column 1.
     # rows = [1,2,3,4,5].
-    gCon     = np.zeros(neJac,float)
     gCon[ 0] =   two*x[0]
     gCon[ 1] = - two*(x[1] - x[0])
     gCon[ 2] = - two*(x[2] - x[0])
@@ -107,10 +106,9 @@ def hexCon(mode,nnCon,nnJac,neJac,x,nState,cu,iu,ru):
 
     return mode, fCon, gCon
 
-def hexObj(mode, nnObj,x,nState,cu,iu,ru):
+def hexObj(mode,x,fObj,gObj,nState):
     fObj = - x[1]*x[5] + x[0]*x[6] - x[2]*x[6] - x[4]*x[7] + x[3]*x[8] + x[2]*x[7]
 
-    gObj    = np.zeros(nnObj,float)
     gObj[0] =   x[6]
     gObj[1] = - x[5]
     gObj[2] = - x[6] + x[7]
@@ -124,12 +122,12 @@ def hexObj(mode, nnObj,x,nState,cu,iu,ru):
     return mode, fObj, gObj
 
 
-inf      = 1.0e+20
+inf     = 1.0e+20
 
-snoptb   = SNOPT_solver()
-snoptb.setOption('Infinite bound',inf)
-snoptb.setOption('Specs file','snmainb.spc')
-snoptb.setOption('Print file','snmainb.out')
+options = SNOPT_options()
+options.setOption('Infinite bound',inf)
+options.setOption('Specs filename','snmainb.spc')
+options.setOption('Print filename','snmainb.out')
 
 m      = 18
 n      = 9
@@ -368,9 +366,9 @@ valJ[51] =  0.0
 
 locJ[ 9] =  51 + 1
 
+# Put components of J into a tuple
+J = (valJ,indJ,locJ)
 
-Names = np.array(['12345678']*n)
-
-snoptb.setOption('Verbose',True)
-result = snoptb.snoptb(name=' snmainb',m=m,n=n,ne=ne,nnCon=nnCon,nnObj=nnObj,nnJac=nnJac,\
-                       x0=x,bl=bl,bu=bu,J=valJ,indJ=indJ,locJ=locJ,funcon=hexCon,funobj=hexObj,Names=Names)
+options.setOption('Verbose',True)
+result = snoptb(hexObj,hexCon,nnObj=nnObj,nnCon=nnCon,nnJac=nnJac,
+                name=' snmainb',x0=x,bl=bl,bu=bu,J=J,m=m,n=n)

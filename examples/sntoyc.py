@@ -31,40 +31,27 @@ This is the toy example problem in the SNOPT documentation.
 
 import numpy            as np
 import scipy.sparse     as sp
-from   optimize.solvers import snoptb, SNOPT_options
+from   optimize.solvers import snoptc, SNOPT_options
 
-
-def toycon(mode,x,fCon,gCon,nState):
+def toycon(mode,nnjac,x,fObj,gObj,fCon,gCon,nState):
     # Nonlinear terms of the gradient only
-    if mode == 0 or mode == 2:
-        fCon[0] = x[0]**2 + x[1]**2
-        fCon[1] = x[1]**4
+    fCon[0] = x[0]**2 + x[1]**2
+    fCon[1] = x[1]**4
 
-    if mode >= 1:
-        gCon[0] = 2.0*x[0]
-        gCon[1] = 2.0*x[1]
-        gCon[2] = 4.0*x[1]**3
-
-    return mode, fCon, gCon
-
-
-def toyobj(mode,x,fObj,gObj,nState):
+    gCon[0] = 2.0*x[0]
+    gCon[1] = 2.0*x[1]
+    gCon[2] = 4.0*x[1]**3
 
     sumx = x[0] + x[1] + x[2]
     # Nonlinear objective term only
     fObj = 0.0
-    if mode == 0 or mode == 2:
-        fObj = sumx**2
+    fObj = sumx**2
 
-    #nnObj = 3
-    #gObj = np.zeros(nnObj,float)
-    if mode == 1 or mode == 2:
-        pass
-        #gObj[0] = 2.0*sum
-        #gObj[1] = 2.0*sum
-        #gObj[2] = 2.0*sum
+    #gObj[0] = 2.0*sum
+    #gObj[1] = 2.0*sum
+    #gObj[2] = 2.0*sum
 
-    return mode, fObj#, gObj
+    return mode, fObj, gObj, fCon, gCon
 
 
 options = SNOPT_options()
@@ -72,7 +59,7 @@ inf      = 1.0e+20
 
 options.setOption('Infinite bound',inf)
 options.setOption('Verify level',3)
-options.setOption('Print filename','sntoyb.out')
+options.setOption('Print filename','sntoyc.out')
 
 m     = 4
 n     = 4
@@ -119,7 +106,7 @@ iObj  = 4
 options.setOption('Verbose',True)
 options.setOption('Derivative level',0)
 
-result = snoptb(toyobj,toycon,nnObj=nnObj,nnCon=nnCon,nnJac=nnJac,
-                x0=x0,J=J,name='  sntoyb',
+result = snoptc(toycon,nnObj=nnObj,nnCon=nnCon,nnJac=nnJac,
+                x0=x0,J=J,name='  sntoyc',
                 iObj=iObj,bl=bl,bu=bu,options=options)
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
 
-__all__ = []
+from .solvers import snopta, snoptb, snoptc, sqopt
+
+__all__ = [ 'snopta', 'snoptb', 'snoptc', 'sqopt' ]
 
