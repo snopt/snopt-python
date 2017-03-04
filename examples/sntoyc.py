@@ -29,9 +29,9 @@ This is the toy example problem in the SNOPT documentation.
     iObj = 4 (indicating the linear objective term)
 """
 
-import numpy            as np
-import scipy.sparse     as sp
-from   optimize.solvers import snoptc, SNOPT_options
+import numpy        as np
+import scipy.sparse as sp
+from   optimize     import snoptc, SNOPT_options
 
 def toycon(mode,nnjac,x,fObj,gObj,fCon,gCon,nState):
     # Nonlinear terms of the gradient only
@@ -42,8 +42,8 @@ def toycon(mode,nnjac,x,fObj,gObj,fCon,gCon,nState):
     gCon[1] = 2.0*x[1]
     gCon[2] = 4.0*x[1]**3
 
-    sumx = x[0] + x[1] + x[2]
     # Nonlinear objective term only
+    sumx = x[0] + x[1] + x[2]
     fObj = 0.0
     fObj = sumx**2
 

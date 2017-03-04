@@ -2,14 +2,13 @@
 An example SNOPTB problem.
 """
 
-import numpy           as np
-from  optimize.solvers import snoptb, SNOPT_options
+import numpy as np
+from optimize import snoptb, SNOPT_options
 
 
 def hexCon(mode,x,fCon,gCon,nState):
     two = 2.0
 
-    fCon     = np.zeros(nnCon,float)
     fCon[ 0] =    x[0]**2          +   x[5]**2
     fCon[ 1] =   (x[1] - x[0])**2  +  (x[6] - x[5])**2
     fCon[ 2] =   (x[2] - x[0])**2  +   x[5]**2

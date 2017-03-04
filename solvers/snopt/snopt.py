@@ -5,49 +5,7 @@ from   optimize.solvers          import snopt7_python as fsnopt
 from   optimize.solvers.options  import SNOPT_options, copyOpts
 from   optimize.solvers.solution import SNOPTA_solution, SNOPT_solution
 from   optimize.solvers.misc     import printInfo
-
-#-------------------------------------------------------------------------------#
-
-class SNOPT_work(object):
-    def __init__(self,lencw=500,leniw=500,lenrw=500):
-        self.setup(lencw,leniw,lenrw)
-
-    def setup(self,lencw=500,leniw=500,lenrw=500):
-        self.lencw   = lencw
-        self.leniw   = leniw
-        self.lenrw   = lenrw
-        self.cw      = np.empty((lencw,8),dtype='|S1')
-        self.iw      = np.zeros(leniw,'i',order='F')
-        self.rw      = np.zeros(lenrw,float,order='F')
-
-    def work_resize(self,mincw,miniw,minrw):
-        if mincw > self.lencw:
-            tmp = np.copy(self.cw)
-            self.cw = np.empty((mincw,8),dtype='|S1')
-            self.cw[0:self.lencw] = tmp[0:self.lencw]
-            del tmp
-
-            self.lencw = mincw
-            self.iw[6] = mincw
-
-        if miniw > self.leniw:
-            tmp = self.iw
-            self.iw = np.zeros(miniw,'i',order='F')
-            self.iw[0:self.leniw] = tmp[0:self.leniw]
-            del tmp
-
-            self.leniw = miniw
-            self.iw[4] = miniw
-
-        if minrw > self.lenrw:
-            tmp = self.rw
-            self.rw = np.zeros(minrw,float,order='F')
-            self.rw[0:self.lenrw] = tmp[0:self.lenrw]
-            del tmp
-
-            self.lenrw = minrw
-            self.iw[2] = minrw
-
+from   optimize.solvers.work     import SNOPT_work
 
 #-------------------------------------------------------------------------------#
 
@@ -308,9 +266,9 @@ def snopta(usrfun,n,nF,**kwargs):
     # Solve problem
     Start  = usropts.getOption('Start type')
     iStart = 0
-    if   Start is 'Warm':
+    if   Start == 'Warm':
         iStart = 1
-    elif Start is 'Hot':
+    elif Start == 'Hot':
         iStart = 2
 
     if xnames.shape != (1,8):
@@ -539,7 +497,6 @@ def snoptb(funobj,funcon,nnObj,nnCon,nnJac,x0,J,**kwargs):
     snwork  = SNOPT_work(505,5000,5000)
     usrwork = SNOPT_work(1,1,1)
 
-    print(snwork.iw[86])
 
     # Initialize SNOPT workspace
     # parameters are set to undefined values
@@ -550,11 +507,11 @@ def snoptb(funobj,funcon,nnObj,nnCon,nnJac,x0,J,**kwargs):
     prtlen  = len(prtfile)
     summOn  = 1 if (usropts.getOption('Summary')).lower() == "yes" else 0
     fsnopt.sninit_wrap(prtfile,prtlen,summOn,snwork.cw,snwork.iw,snwork.rw)
-    print(snwork.iw[86])
+
 
     # Copy options to SNOPT workspace
     info = copyOpts(verbose,usropts,snwork)
-    print(snwork.iw[86])
+
 
     # Read specs file if one was given
     info = 0
@@ -564,7 +521,6 @@ def snoptb(funobj,funcon,nnObj,nnCon,nnJac,x0,J,**kwargs):
         if info != 101 and info != 104:
             print('Specs read failed: INFO = {:d}'.format(info))
             return info
-    print(snwork.iw[86])
 
     # Check memory
     neG = nnCon*nnJac
@@ -992,7 +948,8 @@ def sqopt(H,x0,**kwargs):
     # Hessian user-defined function
     assert callable(H)
     try:
-        nnH = H(x0,0).size
+        Hx  = np.zeros(n)
+        nnH = H(x0,Hx,0).size
     except:
         raise TypeError('Error with callable H')
 
@@ -1068,10 +1025,15 @@ def sqopt(H,x0,**kwargs):
     Start  = usropts.getOption('Start type')
     iObj   = 0
 
+    if Names.shape != (1,8):
+        snNames = Names.view('S1').reshape((Names.size,-1))
+    else:
+        snNames = Names
+
     count = 1
     while True:
         res = fsnopt.sqopt_wrap(Start, H, nName, nnH, iObj, f, name,
-                                valA, indA, locA, bl, bu, c, Names,
+                                valA, indA, locA, bl, bu, c, snNames,
                                 eType, hs, x, pi,
                                 usrwork.cw,usrwork.iw,usrwork.rw,
                                 snwork.cw,snwork.iw,snwork.rw)
@@ -1097,14 +1059,11 @@ def sqopt(H,x0,**kwargs):
     result.pi         = res[2]
     result.rc         = res[3]
     result.info       = res[4]
-
     result.iterations = res[5]
-    result.objective  = res[5]
-
-    result.nS         = res[6]
-    result.num_inf    = res[7]
-    result.sum_inf    = res[8]
-    result.objective  = res[9]
+    result.nS         = res[9]
+    result.num_inf    = res[10]
+    result.sum_inf    = res[11]
+    result.objective  = res[12]
 
 
     # Finish up

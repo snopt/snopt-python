@@ -1,5 +1,5 @@
 """
-This is the toy example problem in the SNOPT documentation.
+This is a toy example problem.
 
     min (x1 + x2 + x3)**2 + 3x3 + 5x4
     st.
@@ -29,74 +29,72 @@ This is the toy example problem in the SNOPT documentation.
     iObj = 4 (indicating the linear objective term)
 """
 
-import numpy        as np
-import scipy.sparse as sp
-from   optimize     import snoptb, SNOPT_options
+import numpy          as np
+import scipy.sparse   as sp
+from   optimize import dnopt, DNOPT_options
 
 
-def toycon(mode,x,fCon,gCon,nState):
+def toycon(mode,x,fCon,jCon,nState):
     # Nonlinear terms of the gradient only
     if mode == 0 or mode == 2:
         fCon[0] = x[0]**2 + x[1]**2
         fCon[1] = x[1]**4
 
     if mode >= 1:
-        gCon[0] = 2.0*x[0]
-        gCon[1] = 2.0*x[1]
-        gCon[2] = 4.0*x[1]**3
+        jCon[0][0] = 2.0*x[0]
+        jCon[0][1] = 2.0*x[1]
+        jCon[1][1] = 4.0*x[1]**3
 
-    return mode, fCon, gCon
+    return mode, fCon, jCon
 
 
 def toyobj(mode,x,fObj,gObj,nState):
-
     sumx = x[0] + x[1] + x[2]
+
     # Nonlinear objective term only
-    fObj = 0.0
     if mode == 0 or mode == 2:
         fObj = sumx**2
 
     if mode == 1 or mode == 2:
-        pass
-        #gObj[0] = 2.0*sum
-        #gObj[1] = 2.0*sum
-        #gObj[2] = 2.0*sum
+        gObj[0] = 2.0*sumx
+        gObj[1] = 2.0*sumx
+        gObj[2] = 2.0*sumx
 
-    return mode, fObj#, gObj
+    return mode, fObj, gObj
 
 
-options = SNOPT_options()
+options = DNOPT_options()
 inf      = 1.0e+20
 
 options.setOption('Infinite bound',inf)
 options.setOption('Verify level',3)
-options.setOption('Print filename','sntoyb.out')
+options.setOption('Print filename','dntoy.out')
 
-m     = 4
+mLCon = 2
+mNCon = 2
 n     = 4
+m     = mLCon + mNCon
 
-nnCon = 2
 nnJac = 2
 nnObj = 3
 
 x0    = np.zeros(n+m,float)
 
-# J contains the sparsity pattern of the Jacobian matrix.
-# For nonlinear elements, enter any nonzero number (in this case 100).
-# Linear elements must be correctly defined.
-J = np.array([ [100.0, 100.0, 1.0,   0],
-               [0.0  , 100.0,   0, 1.0],
-               [2.0  ,   4.0,   0,   0],
-               [0.0  ,   0.0, 3.0, 5.0]])
 
-# Alternatively, the user can provide the sparsity pattern in
-# sparse-by-column format.  Here, indJ contains the row indices,
-# locJ are the column pointers, and J contains the matrix values.
-#
-# indJ = np.array([0,2,0,1,2,0,3,1,3],int)
-# locJ = np.array([0,2,5,7,9],int)
-# J    = np.array([100.0, 2.0, 100.0, 100.0, 4.0, 1.0, 3.0, 1.0, 5.0],float)
+# H need not be initialized for Cold starts.
+# For a Warm start, H provides the initial approximation of the
+#  Hessian of the Lagrangian (usually the output H from a previous run)
+H = np.zeros((n,n))
 
+# A contains the Jacobian of the linear constraints.
+# J contains the sparsity pattern of the nonlinear Jacobian matrix.
+#  Only assign the constant elements.  Others will be assigned in toycon/funcon.
+
+A = np.array([ [2.0, 4.0,   0,   0],
+               [0.0, 0.0, 3.0, 5.0] ])
+
+J = np.array([ [0.0, 0.0, 1.0,   0],
+               [0.0, 0.0, 0.0, 1.0] ])
 
 bl    = -inf*np.ones(n+m)
 bu    =  inf*np.ones(n+m)
@@ -112,12 +110,11 @@ bu[5] = 4.0
 
 bl[6] = 0.0
 
-iObj  = 4
+iObj  = 2
 
 options.setOption('Verbose',True)
 options.setOption('Derivative level',0)
 
-result = snoptb(toyobj,toycon,nnObj=nnObj,nnCon=nnCon,nnJac=nnJac,
-                x0=x0,J=J,name='  sntoyb',
-                iObj=iObj,bl=bl,bu=bu,options=options)
-
+result = dnopt(toyobj,toycon,nnObj=nnObj,nnJac=nnJac,
+               x0=x0,H=H,A=A,J=J,name='  sntoyb',
+               iObj=iObj,bl=bl,bu=bu,options=options)

@@ -4,7 +4,7 @@ Diet problem (LP) solved with SNOPTA
 
 import numpy as np
 import scipy.sparse as sp
-from   optimize.solvers import snopta, SNOPT_options
+from   optimize import snopta, SNOPT_options
 
 
 def dieta_fun(status,x,F,G,needF,needG):

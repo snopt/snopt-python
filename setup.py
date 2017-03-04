@@ -14,6 +14,8 @@ def config_optimize(parent_package='',top_path=None):
 
     config.add_data_files('README')
     config.add_subpackage('solvers')
+    config.add_subpackage('solvers/snopt')
+    config.add_subpackage('solvers/dnopt')
 
     return config
 

@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 
-from .solvers import snopta, snoptb, snoptc, sqopt
+__all__ = [ 'snopta', 'snoptb', 'snoptc', 'sqopt',
+            'dnopt', 'dqopt',
+            'SNOPT_options', 'DNOPT_options',
+            'SNOPT_solution', 'DNOPT_solution' ]
 
-__all__ = [ 'snopta', 'snoptb', 'snoptc', 'sqopt' ]
-
+from .solvers  import(
+    snopta, snoptb, snoptc, sqopt,
+    dnopt, dqopt,
+    SNOPT_options, DNOPT_options,
+    SNOPT_solution, DNOPT_solution)

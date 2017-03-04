@@ -16,7 +16,11 @@ def configuration(parent_package='',top_path=None):
 
     snopt7_lib_path = os.getenv('SNOPT7LIB')
     if ( snopt7_lib_path == None ):
-        snopt7_lib_path=os.getcwd()+'/..'
+        snopt7_lib_path=os.getcwd()+'/../lib'
+
+    dnopt_lib_path = os.getenv('DNOPTLIB')
+    if ( dnopt_lib_path == None ):
+        dnopt_lib_path=os.getcwd()+'/../lib'
 
     config = Configuration('solvers', parent_package, top_path )
 
@@ -27,9 +31,14 @@ def configuration(parent_package='',top_path=None):
 #                         extra_f90_compile_args=[sqic_mod_path])
 
     config.add_extension(name='snopt7_python',
-                         sources=['snopt/snopt7_python.pyf','snopt/snopt7_python.f90'],
+                         sources=['f2py/snopt7_python.pyf','f2py/snopt7_python.f90'],
                          library_dirs=snopt7_lib_path,
                          libraries=['snopt7'])
+
+    config.add_extension(name='dnopt_python',
+                         sources=['f2py/dnopt_python.pyf','f2py/dnopt_python.f90'],
+                         library_dirs=dnopt_lib_path,
+                         libraries=['dnopt'])
 
     return config
 

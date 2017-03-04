@@ -19,26 +19,29 @@ The Jacobian is:
 
 """
 
-import numpy            as np
-import scipy.sparse     as sp
-from   optimize.solvers import snopta, SNOPT_options
+import numpy        as np
+import scipy.sparse as sp
+from   optimize import snopta, SNOPT_options
 
 
-def sntoya_objF(status,x,F,G,needF,needG):
-    F = np.array([                      x[1], # objective row
-                   x[0]**2        + 4.0*x[1]**2,
-                  (x[0] - 2.0)**2 +     x[1]**2 ])
+def sntoya_objF(status,x,needF,F,needG,G):
+    F[0] = x[1]         # objective row
+    F[1] = x[0]**2        + 4.0*x[1]**2
+    F[2] = (x[0] - 2.0)**2 +     x[1]**2
+
     return status, F
 
+def sntoya_objFG(status,x,needF,F,needG,G):
+    F[0] = x[1]         # objective row
+    F[1] = x[0]**2        + 4.0*x[1]**2
+    F[2] = (x[0] - 2.0)**2 +     x[1]**2
 
-def sntoya_objFG(status,x,F,G,needF,needG):
-    F = np.array([                      x[1], # objective row
-                   x[0]**2        + 4.0*x[1]**2,
-                  (x[0] - 2.0)**2 +     x[1]**2 ])
+    G[0] = 2*x[0]
+    G[1] = 8*x[1]
+    G[2] = 2*(x[0]-2)
+    G[3] = 2*x[1]
 
-    G = np.array([ 2*x[0], 8*x[1], 2*(x[0]-2), 2*x[1] ])
     return status, F, G
-
 
 inf   = 1.0e20
 options = SNOPT_options()

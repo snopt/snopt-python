@@ -6,7 +6,7 @@ python module __user__routines
        subroutine qphx(nnh,x,hx,nstate,cu,lencu,iu,leniu,ru,lenru)
          integer optional,intent(in),check(len(x)>=nnh),depend(x) :: nnh=len(x)
          double precision dimension(nnh),intent(in) :: x
-         double precision dimension(nnh),intent(out) :: hx
+         double precision dimension(nnh),intent(in,out) :: hx
          integer intent(in) :: nstate
          !character(len=8) dimension(lencu),intent(inplace) :: cu
          character*8 dimension(lencu),intent(inplace) :: cu
@@ -79,7 +79,7 @@ python module __user__routines
          integer intent(in) :: needg
          integer, optional,intent(in),check(len(g)>=leng),depend(g) :: leng=len(g)
          double precision dimension(n),intent(in) :: x
-         double precision dimension(nf),intent(out) :: f
+         double precision dimension(nf),intent(in,out) :: f
          double precision dimension(leng),intent(in,out) :: g
          !character(len=8) dimension(lencu),intent(inplace) :: cu
          character*8 dimension(lencu),intent(inplace) :: cu
