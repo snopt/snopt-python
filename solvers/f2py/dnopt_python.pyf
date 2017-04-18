@@ -284,10 +284,10 @@ python module dnopt_python ! in
             double precision dimension(lenrw),intent(inplace) :: rw
             integer, optional,intent(in),check(len(rw)>=lenrw),depend(rw) :: lenrw=len(rw)
         end subroutine dqopt_wrap
-        subroutine dnend(iw,leniw) ! in :dnopt_python:dnopt_python.f90
+        subroutine dnend_wrap(iw,leniw) ! in :dnopt_python:dnopt_python.f90
             integer dimension(leniw),intent(in) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
-        end subroutine dnend
+        end subroutine dnend_wrap
     end interface
 end python module dnopt_python
 

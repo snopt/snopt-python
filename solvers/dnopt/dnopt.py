@@ -236,7 +236,7 @@ def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A,J,**kwargs):
 
 
     # Finish up
-    fdnopt.dnend(dnwork.iw)
+    fdnopt.dnend_wrap(dnwork.iw)
 
     # Print solution?
     if verbose:
@@ -435,7 +435,7 @@ def dqopt(H,x0,**kwargs):
 
 
     # Finish up
-    fsnopt.snend(snwork.iw)
+    fsnopt.dnend_wrap(snwork.iw)
 
     # Print solution?
     if verbose:

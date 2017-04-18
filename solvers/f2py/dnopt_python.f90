@@ -70,7 +70,7 @@ subroutine dnspec_wrap(info, spcfile, cw, lencw, iw, leniw, rw, lenrw)
 
   call dnFileOpenRead(iSpecs, trim(spcfile))
   call dnSpec(iSpecs, info, cw, lencw, iw, leniw, rw, lenrw)
-  call dnFileClose(iSpecs)
+  close(iSpecs)
 
   if (info /= 101 .and. info /= 107) return
 
@@ -248,7 +248,7 @@ subroutine dqspec_wrap(info, spcfile, cw, lencw, iw, leniw, rw, lenrw)
 
   call dnFileOpenRead(iSpecs, trim(spcfile))
   call dqSpec(iSpecs, info, cw, lencw, iw, leniw, rw, lenrw)
-  call dnFileClose(iSpecs)
+  close(iSpecs)
 
   if (info /= 101 .and. info /= 107) return
 
@@ -309,7 +309,7 @@ end subroutine dqopt_wrap
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-subroutine dnend(iw, leniw)
+subroutine dnend_wrap(iw, leniw)
   integer, intent(in)    :: leniw, iw(leniw)
 
   !=============================================================================
@@ -318,6 +318,6 @@ subroutine dnend(iw, leniw)
   close(iw(12))  ! print file
   if (iw(13) /= 6 ) close(iw(13))  ! summary file
 
-end subroutine dnend
+end subroutine dnend_wrap
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
