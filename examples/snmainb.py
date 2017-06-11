@@ -370,4 +370,4 @@ J = (valJ,indJ,locJ)
 
 options.setOption('Verbose',True)
 result = snoptb(hexObj,hexCon,nnObj=nnObj,nnCon=nnCon,nnJac=nnJac,
-                name=' snmainb',x0=x,bl=bl,bu=bu,J=J,m=m,n=n)
+                name=' snmainb',x0=x,bl=bl,bu=bu,J=J,m=m,n=n,options=options)

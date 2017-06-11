@@ -784,54 +784,34 @@ def snoptc(userfun,nnObj,nnCon,nnJac,x0,J,**kwargs):
         snNames = Names
 
     count = 1
+    result = SNOPT_solution(name,Names)
+
     while True:
-        res = fsnopt.snoptc_wrap(Start, nName, nnCon, nnObj, nnJac,
-                                 iObj, ObjAdd, name, userfun,
-                                 valJ, indJ, locJ,
-                                 bl, bu, snNames, hs, x0, pi,
-                                 usrwork.cw, usrwork.iw, usrwork.rw,
-                                 snwork.cw, snwork.iw, snwork.rw)
-        if  res[4]/10 == 8:
+        result.states, \
+        result.x, \
+        result.pi, \
+        result.rc, \
+        result.info, \
+        result.iterations, \
+        result.major_itns, \
+        mincw, miniw, minrw, \
+        result.nS, \
+        result.num_inf, \
+        result.sum_inf, \
+        result.objective = fsnopt.snoptc_wrap(Start, nName, nnCon, nnObj, nnJac,
+                                              iObj, ObjAdd, name, userfun,
+                                              valJ, indJ, locJ,
+                                              bl, bu, snNames, hs, x0, pi,
+                                              usrwork.cw, usrwork.iw, usrwork.rw,
+                                              snwork.cw, snwork.iw, snwork.rw)
+        if  result.info/10 == 8:
             count += 1
             if count > maxTries:
                 print(' Could not allocate memory for SNOPT')
                 return info
-            snwork.work_resize(res[7],res[8],res[9])
+            snwork.work_resize(mincw,miniw,minrw)
         else:
             break
-
-    # Results
-    # res[0]  = hs
-    # res[1]  = x
-    # res[2]  = pi
-    # res[3]  = rc
-    # res[4]  = info
-    # res[5]  = itn
-    # res[6]  = mjritn
-    # res[7]  = mincw
-    # res[8]  = miniw
-    # res[9]  = minrw
-    # res[10] = nS
-    # res[11] = nInf
-    # res[12] = sInf
-    # res[13] = objective
-
-
-    # Return solution
-    result = SNOPT_solution(name,Names)
-    result.states     = res[0]
-    result.x          = res[1]
-    result.pi         = res[2]
-    result.rc         = res[3]
-    result.info       = res[4]
-
-    result.iterations = res[5]
-    result.major_itns = res[6]
-
-    result.nS         = res[10]
-    result.num_inf    = res[11]
-    result.sum_inf    = res[12]
-    result.objective  = res[13]
 
     # Finish up
     fsnopt.snend(snwork.iw)
@@ -1030,41 +1010,23 @@ def sqopt(H,x0,**kwargs):
     else:
         snNames = Names
 
-    count = 1
-    while True:
-        res = fsnopt.sqopt_wrap(Start, H, nName, nnH, iObj, f, name,
-                                valA, indA, locA, bl, bu, c, snNames,
-                                eType, hs, x, pi,
-                                usrwork.cw,usrwork.iw,usrwork.rw,
-                                snwork.cw,snwork.iw,snwork.rw)
-        break
 
-    # Results
-    # res[0]  = hs
-    # res[1]  = x
-    # res[2]  = pi
-    # res[3]  = rc
-    # res[4]  = info
-    # res[5]  = itn
-    # res[6]  = mincw
-    # res[7]  = miniw
-    # res[8]  = minrw
-    # res[9]  = nS
-    # res[10] = nInf
-    # res[11] = sInf
-    # res[12] = Obj
     result = SNOPT_solution(name)
-    result.states     = res[0]
-    result.x          = res[1]
-    result.pi         = res[2]
-    result.rc         = res[3]
-    result.info       = res[4]
-    result.iterations = res[5]
-    result.nS         = res[9]
-    result.num_inf    = res[10]
-    result.sum_inf    = res[11]
-    result.objective  = res[12]
-
+    result.states, \
+    result.x, \
+    result.pi, \
+    result.rc, \
+    result.info, \
+    result.iterations, \
+    mincw, miniw, minrw, \
+    result.nS, \
+    result.num_inf, \
+    result.sum_inf, \
+    result.objective = fsnopt.sqopt_wrap(Start, H, nName, nnH, iObj, f, name,
+                                         valA, indA, locA, bl, bu, c, snNames,
+                                         eType, hs, x, pi,
+                                         usrwork.cw,usrwork.iw,usrwork.rw,
+                                         snwork.cw,snwork.iw,snwork.rw)
 
     # Finish up
     fsnopt.snend(snwork.iw)
