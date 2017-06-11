@@ -9,7 +9,7 @@ from   optimize.solvers.work     import SNOPT_work
 
 #-------------------------------------------------------------------------------#
 
-def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A,J,**kwargs):
+def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A=None,J=None,**kwargs):
     """
     dnopt calls the solver DNOPT to solve the optimization
     problem:
@@ -30,7 +30,7 @@ def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A,J,**kwargs):
     funobj     is a user-defined function that computes the objective and its
                gradient (required)
     funcon     is a user-defined function that computes the constraints and the
-               Jacobian (required)
+               Jacobian (required; set to None if no constraints)
     funhes     is a user-defined function that computes the Hessian of the
                Lagrangian (optional; only provide this if you want to use
                            the 2nd derivative version of DNOPT)
@@ -66,8 +66,8 @@ def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A,J,**kwargs):
     and the number of  variables from the given data.
 
     If it doesn't do it correctly, provide dnopt with the following info:
-      mLcon    is the number of linear constraints  (mLcon > 0)
-      mNcon    is the number of nonlinear constraints  (mNcon > 0)
+      mLcon    is the number of linear constraints  (mLcon >= 0)
+      mNcon    is the number of nonlinear constraints  (mNcon >= 0)
       n        is the number of variables  (n > 0)
 
     """
@@ -79,32 +79,39 @@ def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A,J,**kwargs):
     maxTries = usropts.getOption('Max memory attempts')
     inf      = usropts.getOption('Infinite bound')
 
-    mNcon    = kwargs.get('mNcon',None)
-    mLcon    = kwargs.get('mLcon',None)
-    n        = kwargs.get('n',None)
+    mNcon    = kwargs.get('mNcon',0)
+    mLcon    = kwargs.get('mLcon',0)
+    n        = kwargs.get('n',0)
 
-    if type(A) is np.ndarray and A.ndim == 2:
-        mLcon = A.shape[0] if mLcon is None else mLcon
-    else:
-        raise TypeError('Type of A is unsupported')
+    if A is not None:
+        if type(A) is np.ndarray and A.ndim == 2:
+            mLcon = A.shape[0] if mLcon is None else mLcon
+        else:
+            raise TypeError('Type of A is unsupported')
+        assert A.shape == (mLcon,n)
 
-    if type(J) is np.ndarray and J.ndim == 2:
-        mNcon = J.shape[0] if mNcon is None else mNcon
-    else:
-        raise TypeError('Type of A is unsupported')
+    if J is not None:
+        if type(J) is np.ndarray and J.ndim == 2:
+            mNcon = J.shape[0] if mNcon is None else mNcon
+        else:
+            raise TypeError('Type of A is unsupported')
+        assert J.shape == (mNcon,n)
 
-    if type(H) is np.ndarray and H.ndim == 2:
-        n = H.shape[0] if n is None else n
-    else:
-        raise TypeError('Type of A is unsupported')
-
-    assert mLcon > 0
-    assert mNcon > 0
+    assert mLcon >= 0
+    assert mNcon >= 0
     m = mLcon + mNcon
 
-    assert A.shape == (mLcon,n)
-    assert J.shape == (mNcon,n)
+    if type(H) is np.ndarray and H.ndim == 2:
+        print(H.shape)
+        n = H.shape[0] if n == 0 else n
+    else:
+        raise TypeError('Type of A is unsupported')
+
+    assert n > 0
     assert H.shape == (n,n)
+
+    if verbose:
+        print('There are {} linear constraints, {} nonlinear constraints, and {} variables'.format(mLcon,mNcon,n))
 
 
     iObj   = kwargs.get('iObj',0)
@@ -181,59 +188,61 @@ def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A,J,**kwargs):
     else:
         dnNames = Names
 
+
+    result = DNOPT_solution(name,Names)
     count = 1
     while True:
-        res = fdnopt.dnopt_wrap(iStart, mLcon, mNcon, nnJac, nnObj,
-                                name, dnNames, iObj, ObjAdd,
-                                funcon, funobj,
-                                states, A, bl, bu, J, H, x0, y,
-                                usrwork.cw, usrwork.iw, usrwork.rw,
-                                dnwork.cw, dnwork.iw, dnwork.rw)
-        if  res[11]/10 == 8:
+        if funcon is None:
+            result.states, \
+            result.f, \
+            result.gObj, \
+            result.H, \
+            result.objective, \
+            result.num_inf, \
+            result.sum_inf, \
+            result.x, \
+            result.y, \
+            result.info, \
+            result.iterations, \
+            result.major_itns, \
+            mincw, \
+            miniw, \
+            minrw = fdnopt.dnopt_uncon_wrap(iStart, nnJac, nnObj,
+                                            name, dnNames, iObj, ObjAdd,
+                                            funobj, states, bl, bu, H, x0, y,
+                                            usrwork.cw, usrwork.iw, usrwork.rw,
+                                            dnwork.cw, dnwork.iw, dnwork.rw)
+        else:
+            result.states, \
+            result.f, \
+            result.gObj, \
+            result.fCon, \
+            result.J, \
+            result.H, \
+            result.objective, \
+            result.num_inf, \
+            result.sum_inf, \
+            result.x, \
+            result.y, \
+            result.info, \
+            result.iterations, \
+            result.major_itns, \
+            mincw, \
+            miniw, \
+            minrw = fdnopt.dnopt_wrap(iStart, mLcon, mNcon, nnJac, nnObj,
+                                      name, dnNames, iObj, ObjAdd,
+                                      funcon, funobj,
+                                      states, A, bl, bu, J, H, x0, y,
+                                      usrwork.cw, usrwork.iw, usrwork.rw,
+                                      dnwork.cw, dnwork.iw, dnwork.rw)
+        if  result.info/10 == 8:
             count += 1
             if count > maxTries:
                 print(' Could not allocate memory for DNOPT')
                 return info
-            dnwork.work_resize(res[7],res[8],res[9])
+            dnwork.work_resize(mincw, miniw, minrw)
         else:
             break
-
-    # Results
-    # res[0]  = state
-    # res[1]  = fObj
-    # res[2]  = gObj
-    # res[3]  = fCon
-    # res[4]  = jCon
-    # res[5]  = H
-    # res[6]  = Obj
-    # res[7]  = nInf
-    # res[8]  = sInf
-    # res[9]  = x
-    # res[10] = y
-    # res[11] = info
-    # res[12] = itn
-    # res[13] = mjritn
-    # res[14] = mincw
-    # res[15] = miniw
-    # res[16] = minrw
-
-    # Return solution
-    result = DNOPT_solution(name,Names)
-    result.states     = res[0]
-    result.f          = res[1]
-    result.gObj       = res[2]
-    result.fCon       = res[3]
-    result.J          = res[4]
-    result.H          = res[5]
-    result.objective  = res[6]
-    result.num_inf    = res[7]
-    result.sum_inf    = res[8]
-    result.x          = res[9]
-    result.y          = res[10]
-    result.info       = res[11]
-    result.iterations = res[12]
-    result.major_itns = res[13]
-
 
     # Finish up
     fdnopt.dnend_wrap(dnwork.iw)
@@ -307,12 +316,9 @@ def dqopt(H,x0,**kwargs):
 
     # Linear constraint matrix
     if A is None:
-        m    = 1
+        m    = 0
         n    = x0.shape[0]
-
-        A    = np.ones(1,n)
-        al   = np.ndarray([-inf])
-        au   = np.ndarray([ inf])
+        A    = np.zeros(1,n)
 
     else:
         if type(A) is np.ndarray and A.ndim == 2:
@@ -402,37 +408,20 @@ def dqopt(H,x0,**kwargs):
     else:
         dnNames = Names
 
-    count = 1
-    while True:
-        res = fdnopt.dqopt_wrap(Start, n, m, nnH, dnNames, nName, iObj, f,
-                                name, A, bl, bu, c, H, qpHx,
-                                eType, state, x, y,
-                                usrwork.cw,usrwork.iw,usrwork.rw,
-                                snwork.cw,snwork.iw,snwork.rw)
-        break
-
-    # Results
-    # res[0]  = state
-    # res[1]  = x
-    # res[2]  = y
-    # res[3]  = info
-    # res[4]  = itn
-    # res[5]  = mincw
-    # res[6]  = miniw
-    # res[7]  = minrw
-    # res[8]  = Obj
-    # res[9]  = nInf
-    # res[10] = sInf
     result = DNOPT_solution(name)
-    result.states     = res[0]
-    result.x          = res[1]
-    result.y          = res[2]
-    result.info       = res[3]
-    result.iterations = res[4]
-    result.objective  = res[8]
-    result.num_inf    = res[9]
-    result.sum_inf    = res[10]
 
+    result.states,
+    result.x,
+    result.y,
+    result.info,
+    result.iterations,
+    result.objective,
+    result.num_inf,
+    result.sum_inf = fdnopt.dqopt_wrap(Start, n, m, nnH, dnNames, nName, iObj, f,
+                                       name, A, bl, bu, c, H, qpHx,
+                                       eType, state, x, y,
+                                       usrwork.cw,usrwork.iw,usrwork.rw,
+                                       snwork.cw,snwork.iw,snwork.rw)
 
     # Finish up
     fsnopt.dnend_wrap(snwork.iw)
