@@ -36,7 +36,7 @@ subroutine dninit_wrap(prtfile, prtlen, summOn, cw, lencw, iw, leniw, rw, lenrw)
   integer :: iPrint, iSumm
 
   if (prtlen > 0) then
-     iPrint = 4
+     iPrint = 9
      call dnFileOpenAppend(iPrint, trim(prtfile))
   else
      iPrint = 0
@@ -95,6 +95,66 @@ subroutine dnmem_wrap(info, mLCon, mNCon, n, nnJac, nnObj, iObj, &
              mincw, miniw, minrw, cw, lencw, iw, leniw, rw, lenrw)
 
 end subroutine dnmem_wrap
+
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+subroutine dnopt_uncon_wrap              &
+    ( Start, n, nnJac, nnObj,            &
+      Prob, Names, nNames, iObj, ObjAdd, &
+      funobj,                            &
+      state, bl, bu,                     &
+      fObj, gObj, H, ldH,                &
+      Obj, nInf, sInf, x, y,             &
+      INFO, itn, mjritn,                 &
+      mincw, miniw, minrw,               &
+      cu, lencu, iu, leniu, ru, lenru,   &
+      cw, lencw, iw, leniw, rw, lenrw)
+  implicit none
+
+  external                        :: funcon, funobj
+
+  character(8),     intent(in)    :: Prob
+  integer,          intent(in)    :: start, n, nnJac, nnObj, &
+                                     nNames, iObj, ldH, &
+                                     lencu, leniu, lenru, &
+                                     lencw, leniw, lenrw
+  double precision, intent(in)    :: ObjAdd, bl(n), bu(n)
+  character(8),     intent(in)    :: Names(nNames)
+
+  character(8),     intent(inout) :: cu(lencu), cw(lencw)
+  integer,          intent(inout) :: state(n), iu(leniu), iw(leniw)
+  double precision, intent(inout) :: H(ldH,*), x(n), y(n), &
+                                     ru(lenru), rw(lenrw)
+
+  integer,          intent(out)   :: info, itn, mjritn, nInf, &
+                                     mincw, miniw, minrw
+  double precision, intent(out)   :: sInf, Obj, fObj, gObj(n)
+
+  !=============================================================================
+  !=============================================================================
+  integer          :: ldJ, ldA, mLCon, mNCon
+  double precision :: A(1,n), Jcon(1,n), fCon(1)
+  external         :: dummycon
+
+  mLCon = 0
+  mNCon = 0
+  ldA   = 1
+  ldJ   = 1
+
+  call dnopt(Start, n, mLCon, mNCon, nnJac, nnObj, &
+             Prob, Names, nNames, iObj, ObjAdd,    &
+             dummycon, funobj,                     &
+             state, A, ldA, bl, bu,                &
+             fObj, gObj, fCon, Jcon, ldJ, H, ldH,  &
+             Obj, nInf, sInf, x, y,                &
+             INFO, mincw, miniw, minrw,            &
+             cu, lencu, iu, leniu, ru, lenru,      &
+             cw, lencw, iw, leniw, rw, lenrw)
+
+  itn    = iw(421)
+  mjritn = iw(422)
+
+end subroutine dnopt_uncon_wrap
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -214,7 +274,7 @@ subroutine dqinit_wrap(prtfile, prtlen, summOn, cw, lencw, iw, leniw, rw, lenrw)
   integer :: iPrint, iSumm
 
   if (prtlen > 0) then
-     iPrint = 4
+     iPrint = 9
      call dnFileOpenAppend(iPrint, trim(prtfile))
   else
      iPrint = 0
@@ -319,5 +379,18 @@ subroutine dnend_wrap(iw, leniw)
   if (iw(13) /= 6 ) close(iw(13))  ! summary file
 
 end subroutine dnend_wrap
+
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+subroutine dummycon(mode, mNCon, nnJac, x, fCon, JCon, ldJ, Status, &
+                    cu, lencu, iu, leniu, ru, lenru)
+  integer,          intent(in)     :: mNCon, nnJac, ldJ, status, &
+                                      lencu, leniu, lenru
+  double precision, intent(in)    :: x(nnJac)
+  integer,          intent(inout) :: mode, iu(leniu)
+  double precision, intent(inout) :: fCon(mNCon), JCon(ldJ,*), ru(lenru)
+  character(8),     intent(inout) :: cu(lencu)
+
+end subroutine dummycon
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

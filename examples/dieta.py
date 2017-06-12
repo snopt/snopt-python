@@ -46,10 +46,8 @@ A       = np.array([ [110, 205, 160, 160, 420, 260],
 # (A,iAfun,jAvar)
 
 x0      = np.ones(n)
-
 xlow    = np.zeros(n)
 xupp    = np.array([ 4, 3, 2, 8, 2, 2],float)
-
 Flow    = np.array([ 2000, 55, 800, -inf ],float)
 #Fupp    = inf*np.ones(nF)
 #default is +inf so we don't need to pass Fupp

@@ -24,9 +24,9 @@ def copyOpts(verbose,usropts,work):
                 if verbose:
                     print('  Setting option: ' + optstr)
 
-                if type(work) is SNOPT_options:
+                if type(usropts) is SNOPT_options:
                     info = fsnopt.copyoptions(optstr,work.cw,work.iw,work.rw)
-                elif type(work) is DNOPT_options:
+                elif type(usropts) is DNOPT_options:
                     info = fdnopt.copyoptions(optstr,work.cw,work.iw,work.rw)
     return info
 

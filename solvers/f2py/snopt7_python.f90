@@ -61,7 +61,7 @@ subroutine sninit_wrap(prtfile, prtlen, summOn, cw, lencw, iw, leniw, rw, lenrw)
   integer :: iPrint, iSumm
 
   if (prtlen > 0) then
-     iPrint = 4
+     iPrint = 9
      call snFileOpenAppend(iPrint, trim(prtfile))
   else
      iPrint = 0
@@ -356,7 +356,7 @@ subroutine sqinit_wrap(prtfile, prtlen, summOn, cw, lencw, iw, leniw, rw, lenrw)
   integer :: iPrint, iSumm
 
   if (prtlen > 0) then
-     iPrint = 4
+     iPrint = 9
      call snFileOpenAppend(iPrint, trim(prtfile))
   else
      iPrint = 0
