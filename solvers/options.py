@@ -285,3 +285,110 @@ class SNOPT_options(OptionsClass):
         }
 
 #-------------------------------------------------------------------------------#
+
+class DNOPT_options(OptionsClass):
+    '''
+    DNOPT_options class:
+    '''
+
+    def __init__ (self):
+        self.setup()
+        self.solverName = 'DNOPT'
+
+    def setup(self):
+        self.options = {
+            # [Current value, default value, type]
+            'Start type'            : ['Cold','Cold',str],  ##
+
+            'Specs filename'        : [None,None,str],  ##
+
+            'Print filename'        : ['SNOPT.out','SNOPT.out',str],  ##
+            'Print frequency'       : [None,None,int],
+            'Print level'           : [None,None,int], # minor print level
+
+            'Summary'               : ['yes','yes',str],
+            'Summary frequency'     : [None,None,int],
+
+            'Solution file'         : [None,None,int],
+            'Solution print'        : [None,None,bool],
+            'Major print level'     : [None,None,int],
+            'Minor print level'     : [None,None,int],
+
+            'Sticky parameters'     : [None,None,int],
+            'Suppress'              : [None,None,int],
+            'Time limit'            : [None,None,float],
+            'Timing level'          : [None,None,int],
+            'System information'    : [None,None,int],
+            'Verify level'          : [None,None,int],
+
+            'Max memory attempts'   : [10,10,int],
+
+            'Total character workspace' : [None,None,int],
+            'Total integer workspace'   : [None,None,int],
+            'Total real workspace'      : [None,None,int],
+
+            #'Problem minmax'        : ['Minimize','Minimize',str],
+            'Proximal point'        : [None,None,int],
+            #'QP solver'             : [None,None,str],    # Cholesky/CG/QN
+
+            'Major feasibility'     : [None,None,float],  #tolCon
+            'Major optimality'      : [None,None,float],  #tolOptNP
+            'Minor feasibility'     : [None,None,float],  #tolx
+            'Minor optimality'      : [None,None,float],  #tolOptQP
+            'Minor phase1'          : [None,None,float],  #tolOptFP
+            'Feasibility tolerance' : [None,None,float],  #tolx
+            'Optimality tolerance'  : [None,None,float],  #tolOptQP
+
+            'Iteration limit'       : [None,None,int],  #itnlim
+            'Major iterations'      : [None,None,int],  #mMajor
+            'Minor iterations'      : [None,None,int],  #mMinor
+
+            'CG tolerance'          : [None,None,float],
+            'CG preconditioning'    : [None,None,int],
+            'CG iterations'         : [None,None,int],
+
+            'Crash option'          : [None,None,int],
+            'Crash tolerance'       : [None,None,float],
+
+            'Debug level'           : [None,None,int],
+
+            'Derivative level'      : [None,None,int],
+            'Derivative linesearch' : [None,None,int],
+            'Derivative option'     : [None,None,int],
+
+            'Elastic objective'     : [None,None,int],
+            'Elastic mode'          : [None,None,int],
+            'Elastic weight'        : [None,None,float],
+            'Elastic weightmax'     : [None,None,float],
+
+            'Hessian frequency'     : [None,None,int],
+            'Hessian flush'         : [None,None,int],
+            'Hessian type'          : [None,None,int],
+            'Hessian updates'       : [None,None,int],
+
+            'Infinite bound'        : [1.0e+20,1.0e+20,float],
+            'Major step limit'      : [None,None,float],
+            'Unbounded objective'   : [None,None,float],
+            'Unbounded step'        : [None,None,float],
+
+            'Linesearch tolerance'  : [None,None,float],
+            'Linesearch debug'      : [None,None,int],
+
+            #'LU type'               : [None,None,str],   #partial/complete/rook
+            'LU swap'               : [None,None,float],
+            'LU factor tolerance'   : [None,None,float],
+            'LU update tolerance'   : [None,None,float],
+            'LU density'            : [None,None,float],
+            'LU singularity'        : [None,None,float],
+
+            'Partial pricing'       : [None,None,int],
+            'Penalty parameter'     : [None,None,float],
+            'Pivot tolerance'       : [None,None,float],
+            'Reduced Hessian limit' : [None,None,int],
+
+            'Scale option'          : [None,None,int],
+            'Scale tolerance'       : [None,None,float],
+            'Scale print'           : [None,None,int],
+
+            'Verbose'               : [False,False,bool]  ##
+}

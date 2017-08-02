@@ -153,3 +153,53 @@ class SNOPT_solution(object):
         return text
 
 #-------------------------------------------------------------------------------#
+class DNOPT_solution(object):
+    '''
+    DNOPT_solution class:
+    '''
+    def __init__ (self,name='',Names=None):
+        self.setup(name,Names)
+
+    def setup(self,name,Names):
+        self.name   = name
+        self.Names  = Names
+        self.states = None
+        self.x      = None
+        self.y      = None
+        self.info   = 0
+
+        self.iterations = 0
+        self.major_itns = 0
+        self.num_inf    = 0
+        self.sum_inf    = 0.
+        self.objective  = 0.
+
+        self.f    = None
+        self.gObj = None
+        self.fCon = None
+        self.J    = None
+        self.H    = None
+
+    def __str__(self):
+        text = ''.join('-' for j in range(82)) + '\n'
+        text+= ' DNOPT Results for problem '  + self.name + '\n'
+        text+= '   EXIT code          = ' + repr(self.info) + '\n'
+        text+= '   Final objective    = ' + repr(self.objective) + '\n'
+        text+= '   Total # iterations = ' + repr(self.iterations) + '\n'
+
+        form = '{:>8s}{:>10s}{:>16s}{:>16s}'
+        text+= form.format('Name','state(j)','x(j)','mul(j)') + '\n'
+
+        form = '{0:>8s}{1:10d}{2:16.6e}{3:16.6e}'
+        if len(self.Names) == 1:
+            n = self.x.size
+            arrays = zip([repr(j) for j in range(n)],self.states,self.x,self.y)
+        else:
+            arrays = zip(np.char.decode(self.Names),self.states,self.x,self.y)
+
+        for namej,hsj,xj,xmj in arrays:
+            text+= form.format(namej,hsj,xj,xmj) + '\n'
+
+return text
+
+#-------------------------------------------------------------------------------#
