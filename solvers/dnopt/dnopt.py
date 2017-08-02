@@ -42,9 +42,11 @@ def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A=None,J=None,**kwargs):
                - H can be a numpy 2-dimensional array
 
     A          is the linear constraint Jacobian
+               - If the problem is unconstrained orbound-constrained, A = None
                - A can be a numpy 2-dimensional array
 
     J          is the nonlinear constraint Jacobian
+               - If the problem is unconstrained orbound-constrained, J = None
                - J can be a numpy 2-dimensional array
 
     iObj       indicates which row of A is the free row containing the linear
@@ -280,7 +282,7 @@ def dqopt(H,x0,**kwargs):
 
     xl, xu     are the lower and upper bounds of x (default -/+ infinity)
 
-    A          is the linear constraint matrix
+    A          is the linear constraint matrix (if constraints exist)
                - A can be a tuple (valA,indA,locA) containing the sparse structure
                  of the matrix
 
@@ -310,8 +312,8 @@ def dqopt(H,x0,**kwargs):
     verbose  = usropts.getOption('Verbose')
     inf      = usropts.getOption('Infinite bound')
 
-    m        = kwargs.get('m',None)
-    n        = kwargs.get('n',None)
+    m        = kwargs.get('m',0)
+    n        = kwargs.get('n',0)
     A        = kwargs.get('A',None)
 
     # Linear constraint matrix
@@ -338,20 +340,26 @@ def dqopt(H,x0,**kwargs):
     c      = kwargs.get('c',np.zeros(1))
     xl     = kwargs.get('xl',-inf*np.ones(n,float))
     xu     = kwargs.get('xu', inf*np.ones(n,float))
-    al     = kwargs.get('al',-inf*np.ones(m,float))
-    au     = kwargs.get('au', inf*np.ones(m,float))
+    if m > 0:
+        al = kwargs.get('al',-inf*np.ones(m,float))
+        au = kwargs.get('au', inf*np.ones(m,float))
+        try:
+            bl = np.concatenate([xl,al])
+            bu = np.concatenate([xu,au])
+        except:
+            raise InputError('Check the bounds of the problem')
+    else:
+        bl = xl
+        bu = xu
     states = kwargs.get('states',np.zeros(n+m,'i'))
     eType  = kwargs.get('eType',np.zeros(n+m,'i'))
     Names  = kwargs.get('names',np.empty((1,8),dtype='|S1'))
     y      = np.zeros(n+m,float)
 
-    try:
-        bl = np.concatenate([xl,al])
-        bu = np.concatenate([xu,au])
-    except:
-        raise InputError('Check the bounds of the problem')
-
-    x = np.concatenate([x0,np.zeros(m)])
+    if m > 0:
+        x = np.concatenate([x0,np.zeros(m)])
+    else:
+        x = x0
 
     assert c.size   <= n
     assert bl.shape == (n+m,)
@@ -364,7 +372,6 @@ def dqopt(H,x0,**kwargs):
     assert Names.dtype.char == 'S'
     assert nName == 1 or nName == n+m
     assert Names.shape == (nName,) or Names.shape == (nName,8)
-
 
     if verbose:
         printInfo('DQOPT',name,m,n,nName,Names,states,x,bl,bu,y)

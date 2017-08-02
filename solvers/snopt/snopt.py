@@ -458,6 +458,9 @@ def snoptb(funobj,funcon,nnObj,nnCon,nnJac,x0,J,**kwargs):
     else:
         raise TypeError('Type of J is unsupported')
 
+    if verbose:
+        print('There are {} constraints and {} variables'.format(m,n))
+
 
     indJ = indJ + 1
     locJ = locJ + 1
