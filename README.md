@@ -10,7 +10,6 @@ Set the environment variable SNOPT7LIB to the location of your SNOPT libraries, 
 ```
 export SNOPT7LIB=$HOME/snopt7/lib
 ```
-On Linux systems, you should also make sure that this location is on LD_LIBRARY_PATH.
 
 Build, install,
 ```
