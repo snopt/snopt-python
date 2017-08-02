@@ -5,6 +5,12 @@ This package provides Python support for the nonlinear optimization code SNOPT. 
 
 Note: Use this interface at your own risk.  I haven't had the time to do a lot of testing on it yet.
 
+Branches:
+master       includes both SNOPT and DNOPT interface (so both libraries have to be present)
+snopt-only   for SNOPT only (Duh)
+dnopt-only   for DNOPT only 
+
+
 To use:
 Set the environment variable SNOPT7LIB to the location of your SNOPT libraries, e.g.,
 ```
