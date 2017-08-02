@@ -69,7 +69,7 @@ python module dnopt_python ! in
         subroutine copyoptions(option,errors,cw,lencw,iw,leniw,rw,lenrw) ! in :dnopt_python:dnopt_python.f90
             character*(*) intent(in) :: option
             integer intent(out) :: errors
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -80,7 +80,7 @@ python module dnopt_python ! in
             character*(*) intent(in) :: prtfile
             integer intent(in) :: prtlen
             integer intent(in) :: summon
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -90,7 +90,7 @@ python module dnopt_python ! in
         subroutine dnspec_wrap(info,spcfile,cw,lencw,iw,leniw,rw,lenrw) ! in :dnopt_python:dnopt_python.f90
             integer intent(out) :: info
             character*(*) intent(in) :: spcfile
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -108,7 +108,7 @@ python module dnopt_python ! in
             integer intent(out) :: mincw
             integer intent(out) :: miniw
             integer intent(out) :: minrw
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -121,8 +121,8 @@ python module dnopt_python ! in
             integer intent(in) :: n
             integer intent(in) :: nnjac
             integer intent(in) :: nnobj
-            character*8 intent(in) :: prob
-            character(len=8) dimension(nnames),intent(in) :: names
+            character(len=8) intent(in) :: prob
+            character*8 dimension(nnames),intent(in) :: names
             integer, optional,intent(in),check(len(names)>=nnames),depend(names) :: nnames=len(names)
             integer intent(in) :: iobj
             double precision intent(in) :: objadd
@@ -145,13 +145,13 @@ python module dnopt_python ! in
             integer intent(out) :: mincw
             integer intent(out) :: miniw
             integer intent(out) :: minrw
-            character(len=8) dimension(lencu),intent(inplace) :: cu
+            character*8 dimension(lencu),intent(inplace) :: cu
             integer, optional,intent(in),check(len(cu)>=lencu),depend(cu) :: lencu=len(cu)
             integer dimension(leniu),intent(inplace) :: iu
             integer, optional,intent(in),check(len(iu)>=leniu),depend(iu) :: leniu=len(iu)
             double precision dimension(lenru),intent(inplace) :: ru
             integer, optional,intent(in),check(len(ru)>=lenru),depend(ru) :: lenru=len(ru)
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -166,8 +166,8 @@ python module dnopt_python ! in
             integer intent(in) :: mncon
             integer intent(in) :: nnjac
             integer intent(in) :: nnobj
-            character*8 intent(in) :: prob
-            character(len=8) dimension(nnames),intent(in) :: names
+            character(len=8) intent(in) :: prob
+            character*8 dimension(nnames),intent(in) :: names
             integer, optional,intent(in),check(len(names)>=nnames),depend(names) :: nnames=len(names)
             integer intent(in) :: iobj
             double precision intent(in) :: objadd
@@ -196,13 +196,13 @@ python module dnopt_python ! in
             integer intent(out) :: mincw
             integer intent(out) :: miniw
             integer intent(out) :: minrw
-            character(len=8) dimension(lencu),intent(inplace) :: cu
+            character*8 dimension(lencu),intent(inplace) :: cu
             integer, optional,intent(in),check(len(cu)>=lencu),depend(cu) :: lencu=len(cu)
             integer dimension(leniu),intent(inplace) :: iu
             integer, optional,intent(in),check(len(iu)>=leniu),depend(iu) :: leniu=len(iu)
             double precision dimension(lenru),intent(inplace) :: ru
             integer, optional,intent(in),check(len(ru)>=lenru),depend(ru) :: lenru=len(ru)
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -217,8 +217,8 @@ python module dnopt_python ! in
             integer intent(in) :: mncon
             integer intent(in) :: nnjac
             integer intent(in) :: nnobj
-            character*8 intent(in) :: prob
-            character(len=8) dimension(nnames),intent(in) :: names
+            character(len=8) intent(in) :: prob
+            character*8 dimension(nnames),intent(in) :: names
             integer, optional,intent(in),check(len(names)>=nnames),depend(names) :: nnames=len(names)
             integer intent(in) :: iobj
             double precision intent(in) :: objadd
@@ -248,13 +248,13 @@ python module dnopt_python ! in
             integer intent(out) :: mincw
             integer intent(out) :: miniw
             integer intent(out) :: minrw
-            character(len=8) dimension(lencu),intent(inplace) :: cu
+            character*8 dimension(lencu),intent(inplace) :: cu
             integer, optional,intent(in),check(len(cu)>=lencu),depend(cu) :: lencu=len(cu)
             integer dimension(leniu),intent(inplace) :: iu
             integer, optional,intent(in),check(len(iu)>=leniu),depend(iu) :: leniu=len(iu)
             double precision dimension(lenru),intent(inplace) :: ru
             integer, optional,intent(in),check(len(ru)>=lenru),depend(ru) :: lenru=len(ru)
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -265,7 +265,7 @@ python module dnopt_python ! in
             character*(*) intent(in) :: prtfile
             integer intent(in) :: prtlen
             integer intent(in) :: summon
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
@@ -275,33 +275,32 @@ python module dnopt_python ! in
         subroutine dqspec_wrap(info,spcfile,cw,lencw,iw,leniw,rw,lenrw) ! in :dnopt_python:dnopt_python.f90
             integer intent(out) :: info
             character*(*) intent(in) :: spcfile
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
             double precision dimension(lenrw),intent(inplace) :: rw
             integer, optional,intent(in),check(len(rw)>=lenrw),depend(rw) :: lenrw=len(rw)
         end subroutine dqspec_wrap
-        subroutine dqopt_wrap(start,n,mcon,nnh,names,nnames,ncobj,iobj,objadd,prob,a,lda,bl,bu,cobj,h,ldh,qphx,etype,state,x,y,info,itn,mincw,miniw,minrw,obj,ninf,sinf,cu,lencu,iu,leniu,ru,lenru,cw,lencw,iw,leniw,rw,lenrw) ! in :dnopt_python:dnopt_python.f90
+        subroutine dqopt_wrap(start,n,mcon,nnh,prob,names,nnames,iobj,objadd,a,lda,bl,bu,cobj,ncobj,h,ldh,etype,state,x,y,info,itn,mincw,miniw,minrw,obj,ninf,sinf,cu,lencu,iu,leniu,ru,lenru,cw,lencw,iw,leniw,rw,lenrw) ! in :dnopt_python:dnopt_python.f90
           use __user__routines
-            character*(*) intent(in) :: start
+            integer intent(in) :: start
             integer intent(in) :: n
             integer intent(in) :: mcon
             integer intent(in) :: nnh
-            character(len=8) dimension(nnames),intent(in) :: names
+            character(len=8) intent(in) :: prob
+            character*8 dimension(nnames),intent(in) :: names
             integer, optional,intent(in),check(len(names)>=nnames),depend(names) :: nnames=len(names)
-            integer, optional,intent(in),check(len(cobj)>=ncobj),depend(cobj) :: ncobj=len(cobj)
             integer intent(in) :: iobj
             double precision intent(in) :: objadd
-            character*8 intent(in) :: prob
             double precision dimension(lda,n),intent(in) :: a
             integer, optional,intent(in),check(shape(a,0)==lda),depend(a) :: lda=shape(a,0)
             double precision dimension(n+mcon),intent(in),depend(n) :: bl
             double precision dimension(n+mcon),intent(in),depend(n) :: bu
             double precision dimension(ncobj),intent(in) :: cobj
+            integer, optional,intent(in),check(len(cobj)>=ncobj),depend(cobj) :: ncobj=len(cobj)
             double precision dimension(ldh,n),intent(in) :: h
             integer, optional,intent(in),check(shape(h,0)==ldh),depend(h) :: ldh=shape(h,0)
-            external qphx
             integer dimension(n+mcon),intent(in),depend(n) :: etype
             integer dimension(n+mcon),intent(in,out,copy),depend(n) :: state
             double precision dimension(n+mcon),intent(in,out,copy),depend(n) :: x
@@ -314,13 +313,13 @@ python module dnopt_python ! in
             double precision intent(out) :: obj
             integer intent(out) :: ninf
             double precision intent(out) :: sinf
-            character(len=8) dimension(lencu),intent(inplace) :: cu
+            character*8 dimension(lencu),intent(inplace) :: cu
             integer, optional,intent(in),check(len(cu)>=lencu),depend(cu) :: lencu=len(cu)
             integer dimension(leniu),intent(inplace) :: iu
             integer, optional,intent(in),check(len(iu)>=leniu),depend(iu) :: leniu=len(iu)
             double precision dimension(lenru),intent(inplace) :: ru
             integer, optional,intent(in),check(len(ru)>=lenru),depend(ru) :: lenru=len(ru)
-            character(len=8) dimension(lencw),intent(inplace) :: cw
+            character*8 dimension(lencw),intent(inplace) :: cw
             integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
             integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)

@@ -256,10 +256,6 @@ def dnopt(funobj,funcon,nnObj,nnJac,x0,H,A=None,J=None,**kwargs):
 
 #-------------------------------------------------------------------------------#
 
-def qpHx(H,x,state):
-    return np.dot(H,x)
-
-
 def dqopt(H,x0,**kwargs):
     """ dqopt solves the quadratic optimization problem:
           min    f + c'x + half*x'Hx
@@ -305,7 +301,7 @@ def dqopt(H,x0,**kwargs):
     """
 
     name     = kwargs.get('name','')
-    usropts  = kwargs.get('options',SNOPT_options())
+    usropts  = kwargs.get('options',DNOPT_options())
 
     verbose  = usropts.getOption('Verbose')
     inf      = usropts.getOption('Infinite bound')
@@ -330,10 +326,16 @@ def dqopt(H,x0,**kwargs):
     # Hessian matrix
     if type(H) is np.ndarray and H.ndim == 2:
         nnH = H.shape[0]
+    elif callable(H):
+        try:
+            Hx  = np.zeros(n)
+            nnH = H(x0,Hx,0).size
+        except:
+            raise TypeError('Error with callable H')
     else:
         raise TypeError('Error with callable H')
 
-
+    iObj   = kwargs.get('iObj',0)
     f      = kwargs.get('f',0.0)
     c      = kwargs.get('c',np.zeros(1))
     xl     = kwargs.get('xl',-inf*np.ones(n,float))
@@ -385,7 +387,7 @@ def dqopt(H,x0,**kwargs):
     fdnopt.dqinit_wrap(prtfile,prtlen,summOn,snwork.cw,snwork.iw,snwork.rw)
 
 
-    # Copy options to SQIC
+    # Copy options to DNOPT
     info = copyOpts(verbose,usropts,snwork)
 
 
@@ -400,8 +402,12 @@ def dqopt(H,x0,**kwargs):
 
 
     # Solve the QP
-    Start  = usropts.getOption('Start type')
-    iObj   = 0
+    Start = usropts.getOption('Start type')
+    iStart = 0
+    if   Start == 'Warm':
+        iStart = 1
+    elif Start == 'Hot':
+        iStart = 2
 
     if Names.shape != (1,8):
         dnNames = Names.view('S1').reshape((Names.size,-1))
@@ -417,14 +423,14 @@ def dqopt(H,x0,**kwargs):
     result.iterations,
     result.objective,
     result.num_inf,
-    result.sum_inf = fdnopt.dqopt_wrap(Start, n, m, nnH, dnNames, nName, iObj, f,
-                                       name, A, bl, bu, c, H, qpHx,
-                                       eType, state, x, y,
+    result.sum_inf = fdnopt.dqopt_wrap(iStart, m, nnH, name, dnNames,
+                                       iObj, f, A, bl, bu, c, H,
+                                       eType, states, x, y,
                                        usrwork.cw,usrwork.iw,usrwork.rw,
                                        snwork.cw,snwork.iw,snwork.rw)
 
     # Finish up
-    fsnopt.dnend_wrap(snwork.iw)
+    fdnopt.dnend_wrap(snwork.iw)
 
     # Print solution?
     if verbose:

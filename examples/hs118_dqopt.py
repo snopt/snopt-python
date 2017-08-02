@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy    as np
-from   optimize import sqopt, SNOPT_options
+from   optimize import dqopt, DNOPT_options
 
 def userHx(x, Hx, state):
     for i in range(0,5):
@@ -90,10 +90,16 @@ au = np.array([6.0, 6.0, 6.0, 6.0, 7.0, 7.0, 7.0, 7.0,
 c = np.array([ 2.3,  1.7,  2.2,  2.3,  1.7,  2.2,  2.3,  1.7,
                2.2,  2.3,  1.7,  2.2,  2.3,  1.7,  2.2 ])
 
+H = np.zeros((n,n))
+for i in range(0,5):
+    H[3*i,3*i]     = .0002
+    H[3*i+1,3*i+1] = .0002
+    H[3*i+2,3*i+2] = .0003
+
 
 # Solve the problem
-options = SNOPT_options()
+options = DNOPT_options()
 options.setOption('Print frequency',1)
 options.setOption('Summary frequency',1)
 
-result = sqopt(userHx, x0, xl=xl, xu=xu, A=A, al=al, au=au, c=c, name='HS118   ', options=options)
+result = dqopt(H, x0, xl=xl, xu=xu, A=A, al=al, au=au, c=c, name='HS118   ', options=options)

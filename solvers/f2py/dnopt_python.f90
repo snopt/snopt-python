@@ -316,23 +316,20 @@ end subroutine dqspec_wrap
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-subroutine dqopt_wrap(Start, n, mCon, nnH, Names, nNames, ncObj, &
-                      iObj, ObjAdd, Prob,                        &
-                      A, ldA, bl, bu, cObj, H, ldH, qpHx,        &
-                      eType, state, x, y,                        &
-                      INFO, itn,                                 &
-                      mincw, miniw, minrw,                       &
-                      Obj, nInf, sInf,                           &
-                      cu, lencu, iu, leniu, ru, lenru,           &
+subroutine dqopt_wrap(Start, n, mCon, nnH, Prob, Names, nNames, &
+                      iObj, ObjAdd,                             &
+                      A, ldA, bl, bu, cObj, ncObj, H, ldH,      &
+                      eType, state, x, y,                       &
+                      INFO, itn,                                &
+                      mincw, miniw, minrw,                      &
+                      Obj, nInf, sInf,                          &
+                      cu, lencu, iu, leniu, ru, lenru,          &
                       cw, lencw, iw, leniw, rw, lenrw)
   implicit none
 
-  external                        :: qpHx
-
-  character(*),     intent(in)    :: Start
   character(8),     intent(in)    :: Prob
-  integer,          intent(in)    :: n, mCon, nnH, nNames, ncObj, iObj, &
-                                     ldA, ldH, eType(n+mcon), &
+  integer,          intent(in)    :: Start, n, mCon, nnH, nNames,&
+                                     ncObj, iObj, ldA, ldH, eType(n+mcon), &
                                      lencu, leniu, lenru, &
                                      lencw, leniw, lenrw
   double precision, intent(in)    :: ObjAdd, cObj(ncObj), &
@@ -350,7 +347,8 @@ subroutine dqopt_wrap(Start, n, mCon, nnH, Names, nNames, ncObj, &
 
   !=============================================================================
   !=============================================================================
-  integer :: nb
+  integer  :: nb
+  external :: qpHx
 
   nb = n + mCon
 
@@ -366,6 +364,24 @@ subroutine dqopt_wrap(Start, n, mCon, nnH, Names, nNames, ncObj, &
   itn = iw(421)
 
 end subroutine dqopt_wrap
+
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+subroutine qpHx &
+    (nnH, H, ldH, x, Hx, status,&
+     cu, lencu, iu, leniu, ru, lenru)
+  integer,          intent(in)    :: nnH, ldH, lencu, leniu, lenru
+  double precision, intent(in)    :: x(nnH)
+  integer,          intent(inout) :: status, iu(leniu)
+  double precision, intent(inout) :: ru(lenru)
+  character(8),     intent(inout) :: cu(lencu)
+  double precision, intent(out)   :: Hx(nnH)
+
+  !=============================================================================
+  !=============================================================================
+
+  call dgemv('N', nnH, nnH, 1.0d+0, H, ldH, x, 1, 0.d+0, Hx, 1)
+end subroutine qpHx
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

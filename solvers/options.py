@@ -1,5 +1,4 @@
 from  abc import ABC
-from  optimize.solvers import snopt7_python as fsnopt
 from  optimize.solvers import dnopt_python  as fdnopt
 
 #-------------------------------------------------------------------------------#
@@ -24,9 +23,7 @@ def copyOpts(verbose,usropts,work):
                 if verbose:
                     print('  Setting option: ' + optstr)
 
-                if type(usropts) is SNOPT_options:
-                    info = fsnopt.copyoptions(optstr,work.cw,work.iw,work.rw)
-                elif type(usropts) is DNOPT_options:
+                if type(usropts) is DNOPT_options:
                     info = fdnopt.copyoptions(optstr,work.cw,work.iw,work.rw)
     return info
 
