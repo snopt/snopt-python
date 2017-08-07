@@ -200,6 +200,6 @@ class DNOPT_solution(object):
         for namej,hsj,xj,xmj in arrays:
             text+= form.format(namej,hsj,xj,xmj) + '\n'
 
-return text
+        return text
 
 #-------------------------------------------------------------------------------#
