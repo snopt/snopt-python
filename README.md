@@ -7,14 +7,15 @@ Note: Use this interface at your own risk.  I haven't had the time to do a lot o
 
 Branches:
 - master       includes both SNOPT and DNOPT interface (so both libraries have to be present)
-- snopt-only   for SNOPT only (Duh)
+- snopt-only   for SNOPT only
 - dnopt-only   for DNOPT only 
 
 
 To use:
-Set the environment variable SNOPT7LIB to the location of your SNOPT libraries, e.g.,
+Set the environment variable SNOPT7LIB and DNOPTLIB to the location of your SNOPT libraries, for example, the following commands assume your SNOPT and DNOPT Fortran libraries are in a directory called "lib" in your home directory:
 ```
-export SNOPT7LIB=$HOME/snopt7/lib
+export SNOPT7LIB=$HOME/lib
+export DNOPTLIB=$HOME/lib
 ```
 On Linux systems, you should also make sure that this location is on LD_LIBRARY_PATH.
 
