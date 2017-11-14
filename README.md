@@ -6,9 +6,9 @@ This package provides Python support for the nonlinear optimization code SNOPT. 
 Note: Use this interface at your own risk.  I haven't had the time to do a lot of testing on it yet.
 
 To use:
-Set the environment variable SNOPT7LIB to the location of your SNOPT libraries, e.g.,
+Set the environment variable DNOPTLIB to the location of your DNOPT libraries, for example, the following commands assume your DNOPT Fortran librarie is in a directory called "lib" in your home directory:
 ```
-export SNOPT7LIB=$HOME/snopt7/lib
+export DNOPTLIB=$HOME/lib
 ```
 
 Build, install,
