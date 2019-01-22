@@ -1,11 +1,11 @@
 import numpy as np
 import scipy.sparse as sp
 
-from   optimize.solvers          import snopt7_python as fsnopt
-from   optimize.solvers.options  import SNOPT_options, copyOpts
-from   optimize.solvers.solution import SNOPTA_solution, SNOPT_solution
-from   optimize.solvers.misc     import printInfo
-from   optimize.solvers.work     import SNOPT_work
+from   snopt.solvers          import snopt7_python as fsnopt
+from   snopt.solvers.options  import SNOPT_options, copyOpts
+from   snopt.solvers.solution import SNOPTA_solution, SNOPT_solution
+from   snopt.solvers.misc     import printInfo
+from   snopt.solvers.work     import SNOPT_work
 
 #-------------------------------------------------------------------------------#
 
@@ -197,9 +197,8 @@ def snopta(usrfun,n,nF,**kwargs):
         prtfile = usropts.getOption('Print filename')
     else:
         prtfile = name.strip() + '.out'
-    prtlen  = len(prtfile)
     summOn  = 1 if (usropts.getOption('Summary')).lower() == "yes" else 0
-    fsnopt.sninit_wrap(prtfile,prtlen,summOn,snwork.cw,snwork.iw,snwork.rw)
+    fsnopt.sninit_wrap(prtfile,summOn,snwork.cw,snwork.iw,snwork.rw)
 
     # Copy options to SNOPT workspace
     info = copyOpts(verbose,usropts,snwork)
@@ -337,7 +336,7 @@ def snopta(usrfun,n,nF,**kwargs):
     result.objective  = res[15]
 
     # Finish up
-    fsnopt.snend(snwork.iw)
+    fsnopt.snend_wrap(snwork.cw,snwork.iw,snwork.rw)
     del res
     del snwork
     del usrwork
@@ -507,9 +506,8 @@ def snoptb(funobj,funcon,nnObj,nnCon,nnJac,x0,J,**kwargs):
         prtfile = usropts.getOption('Print filename')
     else:
         prtfile = name.strip() + '.out'
-    prtlen  = len(prtfile)
     summOn  = 1 if (usropts.getOption('Summary')).lower() == "yes" else 0
-    fsnopt.sninit_wrap(prtfile,prtlen,summOn,snwork.cw,snwork.iw,snwork.rw)
+    fsnopt.sninit_wrap(prtfile,summOn,snwork.cw,snwork.iw,snwork.rw)
 
 
     # Copy options to SNOPT workspace
@@ -592,7 +590,7 @@ def snoptb(funobj,funcon,nnObj,nnCon,nnJac,x0,J,**kwargs):
     result.objective  = res[13]
 
     # Finish up
-    fsnopt.snend(snwork.iw)
+    fsnopt.snend_wrap(snwork.cw,snwork.iw,snwork.rw)
 
     # Print solution?
     if verbose:
@@ -752,9 +750,8 @@ def snoptc(userfun,nnObj,nnCon,nnJac,x0,J,**kwargs):
         prtfile = usropts.getOption('Print filename')
     else:
         prtfile = name.strip() + '.out'
-    prtlen  = len(prtfile)
     summOn  = 1 if (usropts.getOption('Summary')).lower() == "yes" else 0
-    fsnopt.sninit_wrap(prtfile,prtlen,summOn,snwork.cw,snwork.iw,snwork.rw)
+    fsnopt.sninit_wrap(prtfile,summOn,snwork.cw,snwork.iw,snwork.rw)
 
 
     # Copy options to SNOPT workspace
@@ -817,7 +814,7 @@ def snoptc(userfun,nnObj,nnCon,nnJac,x0,J,**kwargs):
             break
 
     # Finish up
-    fsnopt.snend(snwork.iw)
+    fsnopt.snend_wrap(snwork.cw,snwork.iw,snwork.rw)
 
     # Print solution?
     if verbose:
@@ -985,9 +982,8 @@ def sqopt(H,x0,**kwargs):
         prtfile = usropts.getOption('Print filename')
     else:
         prtfile = name.strip() + '.out'
-    prtlen  = len(prtfile)
     summOn  = 1 if (usropts.getOption('Summary')).lower() == "yes" else 0
-    fsnopt.sqinit_wrap(prtfile,prtlen,summOn,snwork.cw,snwork.iw,snwork.rw)
+    fsnopt.sqinit_wrap(prtfile,summOn,snwork.cw,snwork.iw,snwork.rw)
 
 
     # Copy options to SQIC
@@ -1032,7 +1028,7 @@ def sqopt(H,x0,**kwargs):
                                          snwork.cw,snwork.iw,snwork.rw)
 
     # Finish up
-    fsnopt.snend(snwork.iw)
+    fsnopt.snend_wrap(snwork.cw,snwork.iw,snwork.rw)
 
     # Print solution?
     if verbose:

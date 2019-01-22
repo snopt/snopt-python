@@ -3,7 +3,7 @@ An example SNOPTB problem.
 """
 
 import numpy as np
-from optimize import snoptb, SNOPT_options
+from snopt import snoptb, SNOPT_options
 
 
 def hexCon(mode,x,fCon,gCon,nState):

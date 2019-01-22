@@ -109,9 +109,8 @@ python module snopt7_python ! in
             double precision dimension(lenrw),intent(inplace) :: rw
             integer, optional,intent(in),check(len(rw)>=lenrw),depend(rw) :: lenrw=len(rw)
         end subroutine copyoptions
-        subroutine sninit_wrap(prtfile,prtlen,summon,cw,lencw,iw,leniw,rw,lenrw) ! in :snopt7_python:snopt7_python.f90
+        subroutine sninit_wrap(prtfile,summon,cw,lencw,iw,leniw,rw,lenrw) ! in :snopt7_python:snopt7_python.f90
             character*(*) intent(in) :: prtfile
-            integer intent(in) :: prtlen
             integer intent(in) :: summon
             !character(len=8) dimension(lencw),intent(in,out) :: cw
             character*8 dimension(lencw),intent(inplace) :: cw
@@ -369,9 +368,8 @@ python module snopt7_python ! in
             double precision dimension(lenrw),intent(inplace) :: rw
             integer, optional,intent(in),check(len(rw)>=lenrw),depend(rw) :: lenrw=len(rw)
         end subroutine snoptc_wrap
-        subroutine sqinit_wrap(prtfile,prtlen,summon,cw,lencw,iw,leniw,rw,lenrw) ! in :snopt7_python:snopt7_python.f90
+        subroutine sqinit_wrap(prtfile,summon,cw,lencw,iw,leniw,rw,lenrw) ! in :snopt7_python:snopt7_python.f90
             character*(*) intent(in) :: prtfile
-            integer intent(in) :: prtlen
             integer intent(in) :: summon
             !character(len=8) dimension(lencw),intent(in,out) :: cw
             character*8 dimension(lencw),intent(inplace) :: cw
@@ -439,10 +437,14 @@ python module snopt7_python ! in
             double precision dimension(lenrw),intent(inplace) :: rw
             integer, optional,intent(in),check(len(rw)>=lenrw),depend(rw) :: lenrw=len(rw)
         end subroutine sqopt_wrap
-        subroutine snend(iw,leniw) ! in :snopt7_python:snopt7_python.f90
-            integer dimension(leniw),intent(in) :: iw
+        subroutine snend_wrap(cw,lencw,iw,leniw,rw,lenrw) ! in :snopt7_python:snopt7_python.f90
+            character*8 dimension(lencw),intent(inplace) :: cw
+            integer, optional,intent(in),check(len(cw)>=lencw),depend(cw) :: lencw=len(cw)
+            integer dimension(leniw),intent(inplace) :: iw
             integer, optional,intent(in),check(len(iw)>=leniw),depend(iw) :: leniw=len(iw)
-        end subroutine snend
+            double precision dimension(lenrw),intent(inplace) :: rw
+            integer, optional,intent(in),check(len(rw)>=lenrw),depend(rw) :: lenrw=len(rw)
+        end subroutine snend_wrap
     end interface
 end python module snopt7_python
 

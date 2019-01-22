@@ -6,7 +6,7 @@ import os,sys
 def config_optimize(parent_package='',top_path=None):
     from numpy.distutils.misc_util import Configuration
 
-    config = Configuration('optimize', parent_package, top_path )
+    config = Configuration('snopt', parent_package, top_path )
     config.set_options(ignore_setup_xxx_py=True,
                        assume_default_configuration=True,
                        delegate_options_to_subpackages=True,
@@ -14,15 +14,13 @@ def config_optimize(parent_package='',top_path=None):
 
     config.add_data_files('README')
     config.add_subpackage('solvers')
-    config.add_subpackage('solvers/snopt')
-    config.add_subpackage('solvers/dnopt')
-
+    config.add_subpackage('solvers/py_snopt')
     return config
 
 def setup_optimize():
     from numpy.distutils.core import setup
 
-    setup( name='optimize',
+    setup( name='snopt',
            author='Elizabeth Wong',
            author_email='elwong@ucsd.edu',
            maintainer='UCSD Optimization',

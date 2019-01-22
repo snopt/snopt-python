@@ -1,6 +1,4 @@
-from  abc import ABC
-from  optimize.solvers import snopt7_python as fsnopt
-from  optimize.solvers import dnopt_python  as fdnopt
+from  snopt.solvers import snopt7_python as fsnopt
 
 #-------------------------------------------------------------------------------#
 
@@ -32,7 +30,7 @@ def copyOpts(verbose,usropts,work):
 
 #-------------------------------------------------------------------------------#
 
-class OptionsClass(ABC):
+class OptionsClass(object):
     '''
     Options Class
     '''

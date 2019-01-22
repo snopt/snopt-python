@@ -4,7 +4,7 @@ This is an unconstrained example (t2banana).
 
 import numpy        as np
 import scipy.sparse as sp
-from   optimize     import snoptb, SNOPT_options
+from   snopt        import snoptb, SNOPT_options
 
 
 def t2con(mode,x,fCon,gCon,nState):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy    as np
-from   optimize import sqopt, SNOPT_options
+from   snopt import sqopt, SNOPT_options
 
 def userHx(x, Hx, state):
     for i in range(0,5):

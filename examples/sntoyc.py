@@ -31,7 +31,7 @@ This is the toy example problem in the SNOPT documentation.
 
 import numpy        as np
 import scipy.sparse as sp
-from   optimize     import snoptc, SNOPT_options
+from   snopt        import snoptc, SNOPT_options
 
 def toycon(mode,nnjac,x,fObj,gObj,fCon,gCon,nState):
     # Nonlinear terms of the gradient only

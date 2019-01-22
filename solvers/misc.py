@@ -1,6 +1,6 @@
 import numpy as np
 
-date = '''Feb 2017'''
+date = '''Jan 2019'''
 
 def printInfo(solver,name,m,n,nName,Names,hs,x,bl,bu,rc,header=True):
     if header:

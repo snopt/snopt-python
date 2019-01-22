@@ -21,7 +21,7 @@ The Jacobian is:
 
 import numpy        as np
 import scipy.sparse as sp
-from   optimize import snopta, SNOPT_options
+from  snopt import snopta, SNOPT_options
 
 
 def sntoya_objF(status,x,needF,F,needG,G):
@@ -29,7 +29,7 @@ def sntoya_objF(status,x,needF,F,needG,G):
     F[1] = x[0]**2        + 4.0*x[1]**2
     F[2] = (x[0] - 2.0)**2 +     x[1]**2
 
-    return status, F
+    return status, F, G
 
 def sntoya_objFG(status,x,needF,F,needG,G):
     F[0] = x[1]         # objective row
