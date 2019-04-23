@@ -58,11 +58,11 @@ subroutine sninit_wrap(prtfile, prtlen, summOn, cw, lencw, iw, leniw, rw, lenrw)
   double precision, intent(inout) :: rw(lenrw)
   !=============================================================================
   !=============================================================================
-  integer :: iPrint, iSumm
+  integer :: iPrint, iSumm, iostat
 
   if (prtlen > 0) then
      iPrint = 9
-     call snFileOpenAppend(iPrint, trim(prtfile))
+     call snFileOpenAppend(iPrint, trim(prtfile), iostat)
   else
      iPrint = 0
   end if
@@ -353,11 +353,11 @@ subroutine sqinit_wrap(prtfile, prtlen, summOn, cw, lencw, iw, leniw, rw, lenrw)
   double precision, intent(inout) :: rw(lenrw)
   !=============================================================================
   !=============================================================================
-  integer :: iPrint, iSumm
+  integer :: iPrint, iSumm, iostat
 
   if (prtlen > 0) then
      iPrint = 9
-     call snFileOpenAppend(iPrint, trim(prtfile))
+     call snFileOpenAppend(iPrint, trim(prtfile), iostat)
   else
      iPrint = 0
   end if
