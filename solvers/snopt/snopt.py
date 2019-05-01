@@ -673,6 +673,7 @@ def snoptc(userfun,nnObj,nnCon,nnJac,x0,J,**kwargs):
     m       = kwargs.get('m',None)
     n       = kwargs.get('n',None)
 
+    snstop  = kwargs.get('snstop',None)
 
     if   type(J) is tuple:
         try:
@@ -790,23 +791,44 @@ def snoptc(userfun,nnObj,nnCon,nnJac,x0,J,**kwargs):
     result = SNOPT_solution(name,Names)
 
     while True:
-        result.states, \
-        result.x, \
-        result.pi, \
-        result.rc, \
-        result.info, \
-        result.iterations, \
-        result.major_itns, \
-        mincw, miniw, minrw, \
-        result.nS, \
-        result.num_inf, \
-        result.sum_inf, \
-        result.objective = fsnopt.snoptc_wrap(Start, nName, nnCon, nnObj, nnJac,
-                                              iObj, ObjAdd, name, userfun,
-                                              valJ, indJ, locJ,
-                                              bl, bu, snNames, hs, x0, pi,
-                                              usrwork.cw, usrwork.iw, usrwork.rw,
-                                              snwork.cw, snwork.iw, snwork.rw)
+        if snstop == None:
+            result.states, \
+            result.x, \
+            result.pi, \
+            result.rc, \
+            result.info, \
+            result.iterations, \
+            result.major_itns, \
+            mincw, miniw, minrw, \
+            result.nS, \
+            result.num_inf, \
+            result.sum_inf, \
+            result.objective = fsnopt.snoptc_wrap(Start, nName, nnCon, nnObj, nnJac,
+                                                  iObj, ObjAdd, name, userfun,
+                                                  valJ, indJ, locJ,
+                                                  bl, bu, snNames, hs, x0, pi,
+                                                  usrwork.cw, usrwork.iw, usrwork.rw,
+                                                  snwork.cw, snwork.iw, snwork.rw)
+        else:
+            result.states, \
+            result.x, \
+            result.pi, \
+            result.rc, \
+            result.info, \
+            result.iterations, \
+            result.major_itns, \
+            mincw, miniw, minrw, \
+            result.nS, \
+            result.num_inf, \
+            result.sum_inf, \
+            result.objective = fsnopt.snkerc_wrap(Start, nName, nnCon, nnObj, nnJac,
+                                                  iObj, ObjAdd, name, userfun, snstop,
+                                                  valJ, indJ, locJ,
+                                                  bl, bu, snNames, hs, x0, pi,
+                                                  usrwork.cw, usrwork.iw, usrwork.rw,
+                                                  snwork.cw, snwork.iw, snwork.rw)
+
+
         if  result.info/10 == 8:
             count += 1
             if count > maxTries:

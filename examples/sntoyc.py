@@ -33,6 +33,17 @@ import numpy        as np
 import scipy.sparse as sp
 from   optimize     import snoptc, SNOPT_options
 
+def mystop(iabort,kktcond,mjrprtlvl,minimize,m,maxs,n,nncon,nnobj,
+           ns,itn,nmajor,nminor,nswap,condZHZ,
+           iobj, scaleObj, objAdd, fObj, fMerit, penparm, step,
+           primalInf, dualInf, maxVi, maxViRel, hs,
+           locJ, indJ, Jcol, scales, bl, bu, Fx, fCon, gCon, gObj, yCon, pi, rc, rg, x):
+
+    print(f"\nhello from mystop -- major iteration: {itn}; current objective: {fObj}")
+    print(f"linesearch step: {step}\n")
+    iAbort = 0
+
+
 def toycon(mode,nnjac,x,fObj,gObj,fCon,gCon,nState):
     # Nonlinear terms of the gradient only
     fCon[0] = x[0]**2 + x[1]**2
@@ -108,5 +119,6 @@ options.setOption('Derivative level',0)
 
 result = snoptc(toycon,nnObj=nnObj,nnCon=nnCon,nnJac=nnJac,
                 x0=x0,J=J,name='  sntoyc',
-                iObj=iObj,bl=bl,bu=bu,options=options)
+                iObj=iObj,bl=bl,bu=bu,options=options,snstop=mystop)
+
 

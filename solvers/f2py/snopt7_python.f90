@@ -344,6 +344,60 @@ end subroutine snoptc_wrap
 
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+subroutine snkerC_wrap(Start, m, n, neJ, nNames,        &
+                       nnCon, nnObjU, nnJac,            &
+                       iObjU, objUAdd, Prob,            &
+                       usrfunc, snSTOP,                 &
+                       valJ, indJ, locJ, bl, bu, Names, &
+                       hs, x, pi, rc,                   &
+                       INFO, itn, mjritn,               &
+                       mincw, miniw, minrw,             &
+                       nS, nInf, sInf, obj,             &
+                       cu, lencu, iu, leniu, ru, lenru, &
+                       cw, lencw, iw, leniw, rw, lenrw)
+  implicit none
+
+  external                        :: usrfunc, snSTOP
+
+  character(*),     intent(in)    :: Start
+  character(8),     intent(in)    :: Prob
+  integer,          intent(in)    :: m, n, neJ, nNames, nnCon, nnJac, nnObjU, &
+                                     iObjU, indJ(neJ), locJ(n+1), &
+                                     lencu, leniu, lenru, &
+                                     lencw, leniw, lenrw
+  double precision, intent(in)    :: ObjUAdd, valJ(neJ), bl(n+m), bu(n+m)
+  character(8),     intent(in)    :: Names(nNames)
+
+  character(8),     intent(inout) :: cu(lencu), cw(lencw)
+  integer,          intent(inout) :: hs(n+m), iu(leniu), iw(leniw)
+  double precision, intent(inout) :: x(n+m), pi(m), ru(lenru), rw(lenrw)
+
+  integer,          intent(out)   :: info, itn, mjritn, nS, nInf, &
+                                     mincw, miniw, minrw
+  double precision, intent(out)   :: sInf, Obj, rc(n+m)
+
+  !=============================================================================
+  !=============================================================================
+  external :: snLog, snLog2, sqLog
+
+  call snkerC(Start, m, n, neJ, nNames,              &
+              nnCon, nnObjU, nnJac,                  &
+              iObjU, objUAdd, trim(Prob),            &
+              usrfunc, snLog, snLog2, sqLog, snSTOP, &
+              valJ, indJ, locJ, bl, bu, Names,       &
+              hs, x, pi, rc,                         &
+              INFO, mincw, miniw, minrw,             &
+              nS, nInf, sInf, obj,                   &
+              cu, lencu, iu, leniu, ru, lenru,       &
+              cw, lencw, iw, leniw, rw, lenrw)
+
+  itn    = iw(421)
+  mjritn = iw(422)
+
+end subroutine snkerC_wrap
+
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 subroutine sqinit_wrap(prtfile, prtlen, summOn, cw, lencw, iw, leniw, rw, lenrw)
   implicit none
   character(*),     intent(in)    :: prtfile
